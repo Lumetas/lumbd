@@ -1,0 +1,39 @@
+#!/bin/bash
+bdpath=$1;
+tablename=$2;
+function=$3;
+args=${@:4};
+pwd=$(pwd);
+cd $bdpath;
+
+
+
+if [[ $function == "echo" ]]; then
+	echo $(sed -n "$args"p $tablename);
+elif [[ $function == "createtable" ]]; then
+	touch $tablename && echo "ok";
+elif [[ $function == "removetable" ]]; then
+	rm $tablename && echo "ok";
+elif [[ $function == "lastid" ]]; then
+	strings=$(awk 'length >0' $tablename | wc -l);
+	echo $strings;
+elif [[ $function == "lastrec" ]]; then
+	strings=$(awk 'length >0' $tablename | wc -l);
+	echo $(sed -n "$strings"p $tablename);
+elif [[ $function == "removestring" ]]; then
+	sed -i "$args"d $tablename && echo "ok";
+elif [[ $function == "addstring" ]]; then
+	echo $args >> $tablename && echo "ok";
+elif [[ $function == "search" ]]; then
+	cat $tablename | grep $args;
+elif [[ $function == "getstringid" ]]; then
+	grep -n "$args" $tablename | sed -r 's/:.+//'	
+fi
+
+
+
+
+
+
+
+cd $pwd;
